@@ -16,6 +16,7 @@
  */
 package org.apache.nifi.processor;
 
+
 /**
  * An immutable object for holding information about a type of relationship.
  *
@@ -30,6 +31,10 @@ public final class Relationship implements Comparable<Relationship> {
      * 'identity'
      */
     private final String name;
+    /**
+     * The name that should be displayed to user when referencing this relationship
+     */
+    private final String displayName;
     /**
      * A user displayable description of the purpose of this relationship.
      */
@@ -49,6 +54,7 @@ public final class Relationship implements Comparable<Relationship> {
     private final boolean isAutoTerminate;
 
     protected Relationship(final Builder builder) {
+        this.displayName = builder.displayName == null ? builder.name : builder.displayName;
         this.name = builder.name == null ? null : builder.name.intern();
         this.description = builder.description;
         this.isAutoTerminate = builder.autoTerminate;
@@ -76,10 +82,18 @@ public final class Relationship implements Comparable<Relationship> {
     }
 
     public static final class Builder {
-
+    	private String displayName = null;
         private String name = "";
         private String description = "";
         private boolean autoTerminate = false;
+        
+        public Builder displayName(final String displayName) {
+            if (null != displayName) {
+                this.displayName = displayName;
+            }
+
+            return this;
+        }
 
         public Builder name(final String name) {
             if (null != name) {
@@ -105,6 +119,10 @@ public final class Relationship implements Comparable<Relationship> {
         }
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+    
     public String getName() {
         return this.name;
     }
@@ -139,6 +157,6 @@ public final class Relationship implements Comparable<Relationship> {
 
     @Override
     public String toString() {
-        return this.name;
+        return this.displayName;
     }
 }
